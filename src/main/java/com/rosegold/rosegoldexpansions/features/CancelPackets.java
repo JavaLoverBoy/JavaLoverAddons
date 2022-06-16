@@ -10,7 +10,7 @@ public class CancelPackets {
     public void onPacketSent(PacketSentEvent event) {
         if(Main.mc.player == null) return;
         if(event.packet instanceof CPacketPlayerTryUseItem) {
-            event.setCanceled(true);
+            //event.setCanceled(true);
         }
     }
 }

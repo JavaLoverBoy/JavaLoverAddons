@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntityLivingBase.class)
 public abstract class MixinEntityLivingBase {
 
-    @Inject(method = "isPotionActive", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "isPotionActive", at = @At("RETURN"), cancellable = true, remap = false)
     public void antiBlind(Potion potionIn, CallbackInfoReturnable<Boolean> cir) {
         if(potionIn == MobEffects.BLINDNESS) {
             cir.setReturnValue(false);

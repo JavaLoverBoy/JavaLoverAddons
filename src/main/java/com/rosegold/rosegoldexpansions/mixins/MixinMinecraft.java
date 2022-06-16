@@ -28,7 +28,7 @@ public abstract class MixinMinecraft {
      * @author minecraft
      * @reason because
      */
-    @Overwrite
+    @Overwrite(remap = false)
     private void createDisplay() throws LWJGLException {
         Display.setResizable(true);
         Display.setTitle("KaufCraft");
@@ -38,7 +38,8 @@ public abstract class MixinMinecraft {
             LOGGER.error("Couldn't set pixel format", lwjglexception);
             try {
                 Thread.sleep(1000L);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
             if (fullscreen) {
                 updateDisplayMode();
             }

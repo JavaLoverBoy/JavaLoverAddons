@@ -46,29 +46,39 @@ public class Pathfinding {
             first = first.addVector(0.5, 0.0, 0.5);
             Rotation needed = RotationUtils.getRotation(first);
             needed.setPitch(Main.mc.player.rotationPitch);
-            if (VecUtils.getHorizontalDistance(Main.mc.player.getPositionVector(), first) > 0.69) {
-                if (RotationUtils.done /*&& needed.getYaw() < 135.0f*/) {
-                    RotationUtils.setup(needed, (long) 150);
+            if (VecUtils.getHorizontalDistance(Main.mc.player.getPositionVector(), first) < 0.6) {
+                if(Main.mc.player.getPositionVector().distanceTo(first) > 2) {
+                    if (RotationUtils.done && needed.getYaw() < 135.0f) {
+                        RotationUtils.setup(needed, (long) 150);
+                    }
+                    Vec3d lastTick = new Vec3d(Main.mc.player.lastTickPosX, Main.mc.player.lastTickPosY, Main.mc.player.lastTickPosZ);
+                    Vec3d diffy = Main.mc.player.getPositionVector().subtract(lastTick);
+                    diffy = diffy.addVector(diffy.x * 4.0, 0.0, diffy.z * 4.0);
+                    Vec3d nextTick = Main.mc.player.getPositionVector().add(diffy);
+                    stopMovement();
+                    Main.mc.player.setSprinting(false);
+                    ArrayList<KeyBinding> neededPresses = VecUtils.getNeededKeyPresses(Main.mc.player.getPositionVector(), first);
+                    if (Math.abs(nextTick.distanceTo(first) - Main.mc.player.getPositionVector().distanceTo(first)) <= 0.05 || nextTick.distanceTo(first) <= Main.mc.player.getPositionVector().distanceTo(first)) {
+                        neededPresses.forEach(v -> KeyBinding.setKeyBindState(v.getKeyCode(), true));
+                    }
+                } else {
+                    RotationUtils.reset();
+                    if (!Pathfinder.goNext()) {
+                        stopMovement();
+                    }
                 }
-                if (Pathfinder.hasNext()) {
-                    Vec3d next = Pathfinder.getNext().addVector(0.5, 0.0, 0.5);
-                    double xDiff = Math.abs(Math.abs(next.x) - Math.abs(first.x));
-                    double zDiff = Math.abs(Math.abs(next.z) - Math.abs(first.z));
-                    Main.mc.player.setSprinting((xDiff == 1.0 && zDiff == 0.0) || (xDiff == 0.0 && zDiff == 1.0));
+            } else {
+                if (RotationUtils.done) {
+                    RotationUtils.setup(needed, (long) 150);
                 }
                 stopMovement();
                 KeyBinding.setKeyBindState(Main.mc.gameSettings.keyBindForward.getKeyCode(), true);
+                Main.mc.player.setSprinting(true);
                 if (Math.abs(Main.mc.player.posY - first.y) > 0.5) {
                     KeyBinding.setKeyBindState(Main.mc.gameSettings.keyBindJump.getKeyCode(), Main.mc.player.posY < first.y);
                 }
                 else {
                     KeyBinding.setKeyBindState(Main.mc.gameSettings.keyBindJump.getKeyCode(), false);
-                }
-            }
-            else {
-                RotationUtils.reset();
-                if (!Pathfinder.goNext()) {
-                    stopMovement();
                 }
             }
         }

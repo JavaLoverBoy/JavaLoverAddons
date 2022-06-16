@@ -13,28 +13,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(NetworkManager.class)
 public class MixinNetworkManager {
-    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true, remap = false)
     private void onSendPacket(Packet<?> packet, CallbackInfo callbackInfo) {
         if (MinecraftForge.EVENT_BUS.post(new PacketSentEvent(packet))) {
             callbackInfo.cancel();
         }
     }
 
-    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("RETURN"), cancellable = true, remap = false)
     private void onSendPacketPost(Packet<?> packet, CallbackInfo callbackInfo) {
         if (MinecraftForge.EVENT_BUS.post(new PacketSentEvent.Post(packet))) {
             callbackInfo.cancel();
         }
     }
 
-    @Inject(method = "channelRead0", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "channelRead0", at = @At(value = "HEAD"), cancellable = true, remap = false)
     private void onChannelReadHead(ChannelHandlerContext context, Packet<?> packet, CallbackInfo callbackInfo) {
         if (MinecraftForge.EVENT_BUS.post(new PacketReceivedEvent(packet, context))) {
             callbackInfo.cancel();
         }
     }
 
-    @Inject(method = "channelRead0", at = @At(value = "RETURN"), cancellable = true)
+    @Inject(method = "channelRead0", at = @At(value = "RETURN"), cancellable = true, remap = false)
     private void onPost(ChannelHandlerContext context, Packet<?> packet, CallbackInfo callbackInfo) {
         if (MinecraftForge.EVENT_BUS.post(new PacketReceivedEvent.Post(packet, context))) {
             callbackInfo.cancel();

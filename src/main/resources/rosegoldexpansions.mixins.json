@@ -4,11 +4,11 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "rosegoldexpansions.refmap.json",
   "mixins": [
-    "MixinEntityLivingBase"
   ],
   "client": [
     "MixinMinecraft",
-    "MixinNetworkManager"
+    "MixinNetworkManager",
+    "MixinEntityLivingBase"
   ],
   "minVersion": "0.8"
 }
